@@ -1,20 +1,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Apache Dubbo – 升级和兼容性</title><link>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/</link><description>Recent content in 升级和兼容性 on Apache Dubbo</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/index.xml" rel="self" type="application/rss+xml"/><item><title>Docs3-V2: 2.x 升级至 3.x 操作指南</title><link>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/2.x-to-3.x-compatibility-guide/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/2.x-to-3.x-compatibility-guide/</guid><description>
-&lt;h3 id="升级">升级&lt;/h3>
-&lt;p>&lt;strong>无需改动任何代码，直接升级到 Dubbo 3.0。&lt;/strong>&lt;/p>
-&lt;p>在 3.0 版本的设计与开发之初，我们就定下了兼容老版本 Dubbo 用户（2.5、2.6、2.7）的目标。因此，往 3.0 版本的升级过程将会是完全透明的，用户无需做任何业务改造，升级 3.x 后的框架行为将保持与 2.x 版本完全一致。&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">&amp;lt;dependency&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;groupId&amp;gt;&lt;/span>org.apache.dubbo&lt;span style="color:#268bd2">&amp;lt;/groupId&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;artifactId&amp;gt;&lt;/span>dubbo&lt;span style="color:#268bd2">&amp;lt;/artifactId&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;version&amp;gt;&lt;/span>3.0.10&lt;span style="color:#268bd2">&amp;lt;/version&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">&amp;lt;/dependency&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>但也要注意，透明升级仅仅是通往 3.0 的第一步，因为 &amp;ldquo;框架行为保持一致&amp;rdquo; 也就意味着用户将无法体验到 3.0 的新特性。&lt;strong>如果要启用 3.0 的带来的新特性，用户则需要进行一定的改造，我们称这个过程为迁移，这是一个按需开启的过程。&lt;/strong>&lt;/p>
-&lt;h3 id="老用户">老用户&lt;/h3>
-&lt;p>对老用户而言，有两条不同的迁移路径：&lt;/p>
+&lt;h2 id="升级到-dubbo-3x-的收益">升级到 Dubbo 3.X 的收益&lt;/h2>
+&lt;p>Dubbo3 依旧保持了 2.x 的经典架构，以解决微服务进程间通信为主要职责，通过丰富的服务治理（如地址发现、流量管理等）能力来更好的管控微服务集群；Dubbo3 对原有框架的升级是全面的，体现在核心 Dubbo 特性的几乎每个环节，通过升级实现了稳定性、性能、伸缩性、易用性的全面提升。&lt;/p>
+&lt;p>&lt;img src="http://static.dubbo.apache.org:8080/imgs/v3/concepts/architecture-1.png" alt="architecture-1">&lt;/p>
 &lt;ul>
-&lt;li>&lt;strong>分两步走，先以兼容模式推动业务升级到 3.0 版本（无需改造），之后在某些时机按需启用新特性（按需改造）；&lt;/strong>&lt;/li>
-&lt;li>&lt;strong>升级与迁移同步完成，在业务升级到 3.0 版本的同时，完成改造并启用新特性；&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>通用的通信协议。&lt;/strong> 全新的 RPC 协议应摒弃私有协议栈，以更通用的 HTTP/2 协议为传输层载体，借助 HTTP 协议的标准化特性，解决流量通用性、穿透性等问题，让协议能更好的应对前后端对接、网关代理等场景；支持 Stream 通信模式，满足不同业务通信模型诉求的同时给集群带来更大的吞吐量。&lt;/li>
+&lt;li>&lt;strong>面向百万集群实例，集群高度可伸缩。&lt;/strong> 随着微服务实践的推广，微服务集群实例的规模也在不停的扩展，这得益于微服务轻量化、易于水平扩容的特性，同时也给整个集群容量带来了负担，尤其是一些中心化的服务治理组件；Dubbo3 需要解决实例规模扩展带来的种种资源瓶颈问题，实现真正的无限水平扩容。&lt;/li>
+&lt;li>&lt;strong>全面拥抱云原生。&lt;/strong>&lt;/li>
 &lt;/ul>
-&lt;h3 id="dubbo-30-新特性">Dubbo 3.0 新特性&lt;/h3>
+&lt;h2 id="dubbo-30-新特性">Dubbo 3.0 新特性&lt;/h2>
 &lt;p>Dubbo 3.0 提供的新特性包括：&lt;/p>
 &lt;ul>
 &lt;li>&lt;strong>新的地址发现模型（应用级服务发现）。&lt;/strong>
@@ -36,7 +29,63 @@
 &lt;li>查看&lt;a href="http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/advanced-features-and-usage/traffic/mesh-style/">统一路由规则设计与实现&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>Docs3-V2: Dubbo 协议迁移至 Triple 协议指南</title><link>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/migration-triple/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/migration-triple/</guid><description>
+&lt;/ul>
+&lt;h2 id="升级前的兼容性检查">升级前的兼容性检查&lt;/h2>
+&lt;p>在跨版本升级的过程中，存在的风险点从大到小分别有：直接修改 Dubbo 源码 -&amp;gt; 基于 Dubbo SPI 扩展点进行扩展 -&amp;gt; 基于 API 或者 Spring 的使用方式。&lt;/p>
+&lt;h3 id="1-直接修改-dubbo-源码">1. 直接修改 Dubbo 源码&lt;/h3>
+&lt;p>对于直接修改 Dubbo 源码这部分的需要修改方自行判断是否在高版本中正常工作，对于这种非标准行为，Dubbo 无法保证其先前的兼容性。此外，通过 javagent 或者 asm 等通过运行时对 Dubbo 的修改也在此范围内。此类修改大部分可以通过后文提供的扫描工具检测出来。&lt;/p>
+&lt;h3 id="2-spi-扩展">2. SPI 扩展&lt;/h3>
+&lt;h4 id="不兼容项">不兼容项&lt;/h4>
+&lt;p>对于 SPI 扩展的，除了应用级服务方向和 EventDispatcher 两个机制在 3.x 中做了破坏性的修改，在 2.7.x 中提供的绝大多数的扩展在 3.x 中也都提供。此部分需要关注的有两个方面：&lt;/p>
+&lt;ul>
+&lt;li>事件总线：出于事件管理的复杂度原因，EventDispatcher 和 EventListener 在 Dubbo 3.x 的支持已经删除。如果有对应扩展机制的使用请考虑重构为对应 Dubbo 功能的扩展。&lt;/li>
+&lt;li>应用级服务发现：Dubbo 2.7 中的应用级服务发现的整体机制在 Dubbo 3.x 中已经被完整重构，功能的性能与稳定性有了很大程度上的提高。因此我们建议您不要使用 Dubbo 2.7 中的应用级服务发现机制，如果有对应的扩展可以在升级到 Dubbo 3.x 之后基于新的代码重新验证实现（绝大多数应用级服务发现的 API 是向前兼容的）。&lt;/li>
+&lt;/ul>
+&lt;h4 id="优化项可选">优化项（可选）&lt;/h4>
+&lt;p>此外，Dubbo 3.x 中对部分扩展点的工作机制进行了优化，可以较大程度上提升应用的性能。&lt;/p>
+&lt;ul>
+&lt;li>1）拦截器机制&lt;/li>
+&lt;/ul>
+&lt;p>Dubbo 中可以基于 Filter 拦截器对请求进行拦截处理。在 Dubbo 2.7 中支持在路由选址后再对请求进行拦截处理。Dubbo 3.x 中抽象了全新的 ClusterFilter 机制，可以在很大程度上降低内存的占用，对与超大规模集群有较大的收益。
+如果您有一些 Consumer 侧的拦截器是基于 Filter 机制实现的，如果没有和远端的 IP 地址强绑定的逻辑，我们建议您将对应的 &lt;code>org.apache.dubbo.rpc.Filter&lt;/code> SPI 扩展点迁移到 &lt;code>org.apache.dubbo.rpc.cluster.filter.ClusterFilter&lt;/code> 这个新的 SPI 扩展点。两个接口的方法定义是完全一样的。&lt;/p>
+&lt;ul>
+&lt;li>2）Router -&amp;gt; StateRouter&lt;/li>
+&lt;/ul>
+&lt;p>Dubbo 中提供了 Router 这个可以动态进行选址路由的能力，同时绝大多数的服务治理能力也都是基于这个 Router 扩展点实现的。在 Dubbo 3.x 中，Dubbo 在 Router 的基础上抽象了全新的 StateRouter 机制，可以在选址性能以及内存占用上有大幅优化。关于 StateRouter 的更多介绍我们会在后续的文档中发布。&lt;/p>
+&lt;h3 id="3-api--spring-使用">3. API / Spring 使用&lt;/h3>
+&lt;p>对于基于 API 或者 Spring 的使用，Dubbo 3.x 和 2.7.x 的使用方式是对齐的，在 Dubbo 3.x 中对部分无效的配置进行了强校验，这部分异常会在启动过程中直接报错，请按照提示修改即可。&lt;/p>
+&lt;h2 id="升级流程">升级流程&lt;/h2>
+&lt;h3 id="1-依赖升级">1. 依赖升级&lt;/h3>
+&lt;p>如果使用 Nacos 作为注册中心，由于 Nacos 特性支持的原因，在升级到 Dubbo 3.x 之前需要将 Nacos Server 升级到 2.x（参考文档 &lt;a href="https://nacos.io/zh-cn/docs/v2/upgrading/2.0.0-upgrading.html">https://nacos.io/zh-cn/docs/v2/upgrading/2.0.0-upgrading.html&lt;/a>），然后再将应用的 Nacos Client 也对应升级。如果使用 Zookeeper 注册中心则不需要处理。
+如果您是使用 Spring Cloud Alibaba Dubbo 进行接入的，由于 Dubbo 部分内部 API 进行了变更，请升级到 xxx。&lt;/p>
+&lt;p>Dubbo 依赖请升级到最新的 3.1.3 版本，Dubbo 和对应的 springboot starter GAV 如下所示。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-xml" data-lang="xml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">&amp;lt;dependency&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;groupId&amp;gt;&lt;/span>org.apache.dubbo&lt;span style="color:#268bd2">&amp;lt;/groupId&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;artifactId&amp;gt;&lt;/span>dubbo&lt;span style="color:#268bd2">&amp;lt;/artifactId&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;version&amp;gt;&lt;/span>3.1.3&lt;span style="color:#268bd2">&amp;lt;/version&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">&amp;lt;/dependency&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">&amp;lt;dependency&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;groupId&amp;gt;&lt;/span>org.apache.dubbo&lt;span style="color:#268bd2">&amp;lt;/groupId&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;artifactId&amp;gt;&lt;/span>dubbo-spring-boot-starter&lt;span style="color:#268bd2">&amp;lt;/artifactId&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">&amp;lt;version&amp;gt;&lt;/span>3.1.3&lt;span style="color:#268bd2">&amp;lt;/version&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">&amp;lt;/dependency&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="2-灰度升级">2. 灰度升级&lt;/h3>
+&lt;p>Dubbo 3 升级对于发布流程没有做特殊限制，按照正常业务发布即可。
+由于 Dubbo 是进行跨大版本的变更升级，发布中请尽可能多分批次发布，同时拉大第一批和第二批发布的时间间隔，做好充足的观察。
+发布过程中，我们建议您先升级应用的下游（也即是服务提供者），在验证服务处理正常以后再继续后续发布。&lt;/p>
+&lt;h3 id="3-升级观测指标">3. 升级观测指标&lt;/h3>
+&lt;p>在发布的过程中，有以下几个纬度的指标可以判断升级是否出现问题。&lt;/p>
+&lt;ul>
+&lt;li>机器的 CPU、内存使用情况&lt;/li>
+&lt;li>接口请求成功率&lt;/li>
+&lt;li>接口请求 RT&lt;/li>
+&lt;li>日志的报错信息&lt;/li>
+&lt;li>自定义扩展行为是否符合预期&lt;/li>
+&lt;/ul>
+&lt;h2 id="注意事项">注意事项&lt;/h2>
+&lt;h3 id="1-应用级服务发现">1. 应用级服务发现&lt;/h3>
+&lt;p>由于 Dubbo 2.7 的应用级服务发现模型存在设计上的问题，在 Dubbo 3.x 中做了大量格式上的修改，所以 2.7.x 和 3.x 的应用级服务发现可能存在无法互相订阅调用的可能性。虽然 Dubbo 会剔除识别不了的实例，但是从稳定性的角度出发，如果您在 2.7.x 中开启了应用级服务发现特性（在 2.7.x 中非默认注册），我们建议先在 2.7.x 中关闭，待升级到 3.x 之后再开启。&lt;/p></description></item><item><title>Docs3-V2: Dubbo 协议迁移至 Triple 协议指南</title><link>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/migration-triple/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/migration-triple/</guid><description>
 &lt;h2 id="triple-介绍">Triple 介绍&lt;/h2>
 &lt;p>&lt;code>Triple&lt;/code> 协议的格式和原理请参阅 &lt;a href="http://static.dubbo.apache.org:8080/zh/docs/concepts/rpc-protocol/">RPC 通信协议&lt;/a>&lt;/p>
 &lt;p>根据 Triple 设计的目标，&lt;code>Triple&lt;/code> 协议有以下优势:&lt;/p>
@@ -55,7 +104,7 @@
 &lt;p>而 Grpc 的默认仅支持 Protobuf 序列化，对于 Java 语言中的多参数以及方法重载也无法支持。&lt;/p>
 &lt;p>Dubbo3的之初就有一条目标是完美兼容 Dubbo2，所以为了 Dubbo2 能够平滑升级， Dubbo 框架侧做了很多工作来保证升级的无感，目前默认的序列化和 Dubbo2 保持一致为&lt;code>hessian2&lt;/code>。&lt;/p>
 &lt;p>所以，如果决定要升级到 Dubbo3 的 &lt;code>Triple&lt;/code> 协议，只需要修改配置中的协议名称为 &lt;code>tri&lt;/code> (注意: 不是triple)即可。&lt;/p>
-&lt;p>接下来我们我们以一个使用 Dubbo2 协议的&lt;a href="https://github.com/apache/dubbo-samples/tree/master/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration">工程&lt;/a> 来举例，如何一步一步安全的升级。&lt;/p>
+&lt;p>接下来我们我们以一个使用 Dubbo2 协议的&lt;a href="https://github.com/apache/dubbo-samples/tree/master/3-extensions/protocol/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration">工程&lt;/a> 来举例，如何一步一步安全的升级。&lt;/p>
 &lt;ol>
 &lt;li>仅使用 &lt;code>dubbo&lt;/code> 协议启动 &lt;code>provider&lt;/code> 和 &lt;code>consumer&lt;/code>，并完成调用。&lt;/li>
 &lt;li>使用 &lt;code>dubbo&lt;/code> 和 &lt;code>tri&lt;/code> 协议 启动&lt;code>provider&lt;/code>，以 &lt;code>dubbo&lt;/code> 协议启动 &lt;code>consumer&lt;/code>，并完成调用。&lt;/li>
@@ -87,7 +136,7 @@
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="仅使用-dubbo-协议">仅使用 dubbo 协议&lt;/h3>
 &lt;p>为保证兼容性，我们先将部分 provider 升级到 &lt;code>dubbo3&lt;/code> 版本并使用 &lt;code>dubbo&lt;/code> 协议。&lt;/p>
-&lt;p>使用 &lt;code>dubbo&lt;/code> 协议启动一个 &lt;a href="https://github.com/apache/dubbo-samples/tree/master/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationDubboProvider.java">&lt;code>Provider&lt;/code>&lt;/a> 和 &lt;a href="https://github.com/apache/dubbo-samples/tree/master/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationDubboConsumer.java">&lt;code>Consumer&lt;/code>&lt;/a> ,完成调用，输出如下:
+&lt;p>使用 &lt;code>dubbo&lt;/code> 协议启动一个 &lt;a href="https://github.com/apache/dubbo-samples/blob/master/3-extensions/protocol/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationDubboProvider.java">&lt;code>Provider&lt;/code>&lt;/a> 和 &lt;a href="https://github.com/apache/dubbo-samples/blob/master/3-extensions/protocol/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationDubboConsumer.java">&lt;code>Consumer&lt;/code>&lt;/a> ,完成调用，输出如下:
 &lt;img src="http://static.dubbo.apache.org:8080/imgs/v3/migration/tri/dubbo3-tri-migration-dubbo-dubbo-result.png" alt="result">&lt;/p>
 &lt;h3 id="同时使用-dubbo-和-triple-协议">同时使用 dubbo 和 triple 协议&lt;/h3>
 &lt;p>对于线上服务的升级，不可能一蹴而就同时完成 provider 和 consumer 升级, 需要按步操作，保证业务稳定。
@@ -97,14 +146,14 @@
 &lt;blockquote>
 &lt;p>按照推荐升级步骤，provider 已经支持了tri协议，所以 dubbo3的 consumer 可以直接使用 tri 协议&lt;/p>
 &lt;/blockquote>
-&lt;p>使用&lt;code>dubbo&lt;/code>协议和&lt;code>triple&lt;/code>协议启动&lt;a href="https://github.com/apache/dubbo-samples/tree/master/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationBothProvider.java">&lt;code>Provider&lt;/code>&lt;/a>和&lt;a href="https://github.com/apache/dubbo-samples/tree/master/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationBothConsumer.java">&lt;code>Consumer&lt;/code>&lt;/a>,完成调用，输出如下:&lt;/p>
+&lt;p>使用&lt;code>dubbo&lt;/code>协议和&lt;code>triple&lt;/code>协议启动&lt;a href="https://github.com/apache/dubbo-samples/blob/master/3-extensions/protocol/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationBothProvider.java">&lt;code>Provider&lt;/code>&lt;/a>和&lt;a href="https://github.com/apache/dubbo-samples/blob/master/3-extensions/protocol/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationBothConsumer.java">&lt;code>Consumer&lt;/code>&lt;/a>,完成调用，输出如下:&lt;/p>
 &lt;p>&lt;img src="http://static.dubbo.apache.org:8080/imgs/v3/migration/tri/dubbo3-tri-migration-both-dubbo-tri-result.png" alt="result">&lt;/p>
 &lt;h3 id="仅使用-triple-协议">仅使用 triple 协议&lt;/h3>
 &lt;p>当所有的 consuemr 都升级至支持 &lt;code>Triple&lt;/code> 协议的版本后，provider 可切换至仅使用 &lt;code>Triple&lt;/code> 协议启动&lt;/p>
 &lt;p>结构如图所示:
 &lt;img src="http://static.dubbo.apache.org:8080/imgs/v3/migration/tri/migrate-only-tri-strust.png" alt="strust">&lt;/p>
-&lt;p>&lt;a href="https://github.com/apache/dubbo-samples/tree/master/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationTriProvider.java">Provider&lt;/a>
-和 &lt;a href="https://github.com/apache/dubbo-samples/tree/master/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationTriConsumer.java">Consumer&lt;/a> 完成调用，输出如下:&lt;/p>
+&lt;p>&lt;a href="https://github.com/apache/dubbo-samples/blob/master/3-extensions/protocol/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationTriProvider.java">Provider&lt;/a>
+和 &lt;a href="https://github.com/apache/dubbo-samples/blob/master/3-extensions/protocol/dubbo-samples-triple/src/main/java/org/apache/dubbo/sample/tri/migration/ApiMigrationTriConsumer.java">Consumer&lt;/a> 完成调用，输出如下:&lt;/p>
 &lt;p>&lt;img src="http://static.dubbo.apache.org:8080/imgs/v3/migration/tri/dubbo3-tri-migration-tri-tri-result.png" alt="result">&lt;/p>
 &lt;h3 id="实现原理">实现原理&lt;/h3>
 &lt;p>通过上面介绍的升级过程，我们可以很简单的通过修改协议类型来完成升级。框架是怎么帮我们做到这些的呢？&lt;/p>
@@ -312,7 +361,7 @@
 &lt;li>&lt;a href="http://static.dubbo.apache.org:8080/zh/docs/migration/migration-service-discovery/">应用级地址发现迁移指南&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;h2 id="与-grpc-互通">与 GRPC 互通&lt;/h2>
-&lt;p>通过对于协议的介绍，我们知道 &lt;code>Triple&lt;/code> 协议是基于 &lt;code>HTTP2&lt;/code> 并兼容 &lt;code>GRPC&lt;/code>。为了保证和验证与&lt;code>GRPC&lt;/code>互通能力，Dubbo3 也编写了各种从场景下的测试。详细的可以通过&lt;a href="https://github.com/apache/dubbo-samples/tree/master/dubbo-samples-triple/README.MD">这里&lt;/a> 了解更多。&lt;/p>
+&lt;p>通过对于协议的介绍，我们知道 &lt;code>Triple&lt;/code> 协议是基于 &lt;code>HTTP2&lt;/code> 并兼容 &lt;code>GRPC&lt;/code>。为了保证和验证与&lt;code>GRPC&lt;/code>互通能力，Dubbo3 也编写了各种从场景下的测试。详细的可以通过&lt;a href="https://github.com/apache/dubbo-samples/blob/master/3-extensions/protocol/dubbo-samples-triple/README.MD">这里&lt;/a> 了解更多。&lt;/p>
 &lt;h2 id="未来-everything-on-stub">未来: Everything on Stub&lt;/h2>
 &lt;p>用过 &lt;code>Grpc&lt;/code> 的同学应该对 &lt;code>Stub&lt;/code> 都不陌生。
 Grpc 使用 &lt;code>compiler&lt;/code> 将编写的 &lt;code>proto&lt;/code> 文件编译为相关的 protobuf 对象和相关 rpc 接口。默认的会同时生成几种不同的 &lt;code>stub&lt;/code>&lt;/p>
@@ -581,7 +630,7 @@ Grpc 使用 &lt;code>compiler&lt;/code> 将编写的 &lt;code>proto&lt;/code> �
 &lt;ul>
 &lt;li>社区主页地址：https://developers.google.cn/protocol-buffers/&lt;/li>
 &lt;li>社区开源地址：https://github.com/google/protobuf&lt;/li>
-&lt;li>相关jar的maven：http://mvnrepository.com/artifact/com.google.protobuf&lt;/li>
+&lt;li>相关jar的maven：https://search.maven.org/search?q=com.google.protobuf&lt;/li>
 &lt;/ul></description></item><item><title>Docs3-V2: 3.0 升级至 3.1 操作指南</title><link>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/3.0-to-3.1-compatibility-guide/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/docs3-v2/java-sdk/upgrades-and-compatibility/3.0-to-3.1-compatibility-guide/</guid><description>
 &lt;h2 id="功能修改点">功能修改点&lt;/h2>
 &lt;h3 id="1-nacos-group-对齐应用级服务发现">1. Nacos Group 对齐（应用级服务发现）&lt;/h3>
