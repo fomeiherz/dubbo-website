@@ -1,82 +1,154 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Apache Dubbo – 跟随示例任务学习 Dubbo</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/</link><description>Recent content in 跟随示例任务学习 Dubbo on Apache Dubbo</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="http://static.dubbo.apache.org:8080/zh/overview/tasks/index.xml" rel="self" type="application/rss+xml"/><item><title>Overview: 环境准备</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/prepare/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/prepare/</guid><description/></item><item><title>Overview: 示例初始化</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/microservice-demo/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/microservice-demo/</guid><description/></item><item><title>Overview: API管理</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/api-management/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/api-management/</guid><description/></item><item><title>Overview: 流量管控</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Apache Dubbo – 跟随示例任务学习 Dubbo</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/</link><description>Recent content in 跟随示例任务学习 Dubbo on Apache Dubbo</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="http://static.dubbo.apache.org:8080/zh/overview/tasks/index.xml" rel="self" type="application/rss+xml"/><item><title>Overview: 流量管控</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/</guid><description>
+&lt;p>此任务基于一个简单的线上商城微服务系统演示了 Dubbo 的流量管控能力。&lt;/p>
+&lt;p>线上商城的架构图如下：&lt;/p>
+&lt;p>&lt;img src="http://static.dubbo.apache.org:8080/imgs/v3/traffic/shop-arc.png" alt="shop-arc">&lt;/p>
+&lt;p>系统由 5 个微服务应用组成：&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>Frontend 商城主页&lt;/code>，作为与用户交互的 web 界面，通过调用 &lt;code>User&lt;/code>、&lt;code>Detail&lt;/code>、&lt;code>Order&lt;/code> 等提供用户登录、商品展示和订单管理等服务。&lt;/li>
+&lt;li>&lt;code>User 用户服务&lt;/code>，负责用户数据管理、身份校验等。&lt;/li>
+&lt;li>&lt;code>Order 订单服务&lt;/code>，提供订订单创建、订单查询等服务，依赖 &lt;code>Detail&lt;/code> 服务校验商品库存等信息。&lt;/li>
+&lt;li>&lt;code>Detail 商品详情服务&lt;/code>，展示商品详情信息，调用 &lt;code>Comment&lt;/code> 服务展示用户对商品的评论记录。&lt;/li>
+&lt;li>&lt;code>Comment 评论服务&lt;/code>，管理用户对商品的评论数据。&lt;/li>
+&lt;/ul>
+&lt;h2 id="部署商场系统">部署商场系统&lt;/h2>
+&lt;p>为方便起见，我们将整个系统部署在 Kubernetes 集群，执行以下命令即可完成商城项目部署，项目源码示例在 &lt;a href="https://github.com/apache/dubbo-samples/tree/master/10-task/dubbo-samples-shop">dubbo-samples/task&lt;/a>。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>kubectl apply -f https://raw.githubusercontent.com/apache/dubbo-samples/master/10-task/dubbo-samples-shop/deploy/All.yml
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>完整的部署架构图如下：&lt;/p>
+&lt;p>&lt;img src="http://static.dubbo.apache.org:8080/imgs/v3/traffic/shop-arc-deploy2.png" alt="shop-arc">&lt;/p>
+&lt;p>&lt;code>Order 订单服务&lt;/code>有两个版本 &lt;code>v1&lt;/code> 和 &lt;code>v2&lt;/code>，&lt;code>v2&lt;/code> 是订单服务优化后发布的新版本。&lt;/p>
+&lt;ul>
+&lt;li>版本 v1 只是简单的创建订单，不展示订单详情&lt;/li>
+&lt;li>版本 v2 在订单创建成功后会展示订单的收货地址详情&lt;/li>
+&lt;/ul>
+&lt;p>&lt;code>Detail&lt;/code> 和 &lt;code>Comment&lt;/code> 服务也分别有两个版本 &lt;code>v1&lt;/code> 和 &lt;code>v2&lt;/code>，我们通过多个版本来演示流量导流后的效果。&lt;/p>
+&lt;ul>
+&lt;li>版本 &lt;code>v1&lt;/code> 默认为所有请求提供服务&lt;/li>
+&lt;li>版本 &lt;code>v2&lt;/code> 模拟被部署在特定的区域的服务，因此 &lt;code>v2&lt;/code> 实例会带有特定的标签&lt;/li>
+&lt;/ul>
+&lt;p>执行以下命令，确定所有服务、Pod都已正常运行：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>$ kubectl get services -n dubbo-demo
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>$ kubectl get pods -n dubbo-demo
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>为了保障系统完整性，除了商城相关的几个微服务应用，示例还在后台拉起了 Nacos 注册配置中心、Dubbo Admin 控制台 和 Skywalking 全链路追踪系统。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>$ kubectl get services -n dubbo-system
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>$ kubectl get pods -n dubbo-system
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="获得访问地址">获得访问地址&lt;/h2>
+&lt;p>执行以下命令，将集群端口映射到本地端口：&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>kubectl port-forward -n dubbo-demo deployment/shop-frontend 8080:8080
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>kubectl port-forward -n dubbo-system service/dubbo-admin 38080:38080
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>kubectl port-forward -n dubbo-system service/skywalking-oap-dashboard 8082:8082
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>此时，打开浏览器，即可通过以下地址访问：&lt;/p>
+&lt;ul>
+&lt;li>商城首页 &lt;a href="http://localhost:8080/">http://localhost:8080/&lt;/a>&lt;/li>
+&lt;li>Dubbo Admin 控制台 &lt;a href="http://localhost:38080/">http://localhost:38080/&lt;/a>&lt;/li>
+&lt;li>Skywalking 控制台 &lt;a href="http://localhost:8082/">http://localhost:8082/&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h2 id="任务项">任务项&lt;/h2>
+&lt;p>接下来，试着通过如下任务项给商城增加一些流量管控规则吧。&lt;/p>
 &lt;section id="section-0" style="">
 &lt;div class="td-content list-page">
 &lt;div class="lead">&lt;/div>&lt;header class="article-meta">
 &lt;/header>&lt;div class="row">
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="col-sm col-md-6 mb-4">
 &lt;div class="h-100 card shadow" href="#">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/timeout/'>动态调整请求超时时间&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/timeout/'>调整超时时间&lt;/a>
 &lt;/h4>
-&lt;p>给 Dubbo 请求设置超时时间可以有效的提高系统稳定性，避免个别服务阻塞占用过多资源。&lt;br/>&lt;br/> 而通过在运行期动态的调整服务超时时间，可以有效的应对超时设置不合理、系统突发情况等导致的服务频繁超时、服务阻塞等问题，提升系统稳定性。&lt;/p>
+&lt;p>通过在运行期动态的调整服务超时时间，可以有效的应对超时设置不合理、系统突发情况等导致的服务频繁超时、服务阻塞等问题，提升系统稳定性。&lt;/p>
 &lt;/div>
 &lt;/div>
 &lt;/div>
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="col-sm col-md-6 mb-4">
 &lt;div class="h-100 card shadow">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/weight/'>通过权重调整流量分布&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/retry/'>增加重试次数&lt;/a>
 &lt;/h4>
-&lt;p>通过权重调整流量分布&lt;/p>
+&lt;p>在服务初次调用失败后，通过重试能有效的提升总体调用成功率。&lt;/p>
 &lt;/div>
 &lt;/div>
 &lt;/div>
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="col-sm col-md-6 mb-4">
 &lt;div class="h-100 card shadow">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/isolation/'>临时踢除服务实例&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/accesslog/'>访问日志&lt;/a>
 &lt;/h4>
-&lt;p>临时踢除服务实例&lt;/p>
+&lt;p>访问日志可以很好的记录某台机器在某段时间内处理的所有服务请求信息，运行态动态的开启访问日志对于排查问题非常有帮助。
+&lt;/p>
 &lt;/div>
 &lt;/div>
 &lt;/div>
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="col-sm col-md-6 mb-4">
 &lt;div class="h-100 card shadow">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/traffic-gray/'>流量灰度&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/region/'>同机房/区域优先&lt;/a>
 &lt;/h4>
-&lt;p>根据请求上下文中的标签，实现对流量进行约束，实现灰度发布&lt;/p>
+&lt;p>同机房/区域优先是指应用调用服务时，优先调用同机房/区域的服务提供者，避免了跨区域带来的网络延时，从而减少了调用的响应时间。
+&lt;/p>
 &lt;/div>
 &lt;/div>
 &lt;/div>
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="col-sm col-md-6 mb-4">
 &lt;div class="h-100 card shadow">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/traffic-routing/'>根据请求条件路由&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/isolation/'>环境隔离&lt;/a>
 &lt;/h4>
-&lt;p>根据请求发起方、请求的方法条件路由&lt;/p>
+&lt;p>通过为集群中的某一个或多个应用划分逻辑隔离环境，可用于灰度环境或多套测试环境搭建。
+&lt;/p>
 &lt;/div>
 &lt;/div>
 &lt;/div>
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0" style="margin-bottom:20px">
+&lt;div class="col-sm col-md-6 mb-4">
 &lt;div class="h-100 card shadow">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/traffic-condition/'>流量隔离&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/arguments/'>参数路由&lt;/a>
 &lt;/h4>
-&lt;p>将不同环境的服务流量进行隔离，保证服务相互不受影响&lt;/p>
+&lt;p>如基于用户 ID 路由流量，将一小部分用户请求转发到最新发布的产品版本，以验证新版本的稳定性、获取用户的产品体验反馈等。
+&lt;/p>
 &lt;/div>
 &lt;/div>
 &lt;/div>
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="col-sm col-md-6 mb-4">
 &lt;div class="h-100 card shadow">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/zone/'>同机房/区域优先&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/weight/'>权重比例&lt;/a>
 &lt;/h4>
-&lt;p>应用调用服务时，优先调用同机房/区域的服务提供者。&lt;/p>
+&lt;p>通过规则动态调整单个或一组机器的权重，可以在运行态改变请求流量的分布，实现动态的按比例的流量路由。
+&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4">
+&lt;div class="h-100 card shadow">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/mock/'>服务降级&lt;/a>
+&lt;/h4>
+&lt;p>服务降级的核心目标就是针对这些弱依赖项，在弱依赖不可用或调用失败时，通过返回降级结果尽可能的维持功能完整。
+&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4">
+&lt;div class="h-100 card shadow">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/traffic-management/host/'>固定机器导流&lt;/a>
+&lt;/h4>
+&lt;p>通过将请求固定的转发某一台提供者机器，帮助快速复现开发或线上问题。
+&lt;/p>
 &lt;/div>
 &lt;/div>
 &lt;/div>
 &lt;/div>
 &lt;hr>
 &lt;/div>
-&lt;/section></description></item><item><title>Overview: 服务治理</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/</guid><description>
+&lt;/section></description></item><item><title>Overview: 微服务生态</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/</guid><description>
 &lt;section id="section-0" style="">
 &lt;div class="td-content list-page">
 &lt;div class="lead">&lt;/div>&lt;header class="article-meta">
@@ -105,7 +177,7 @@
 &lt;div class="h-100 card shadow">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;p>http 网关接入（文档建设中）&lt;/p>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/rate-limit/'>网关接入&lt;/a>
 &lt;/h4>
 &lt;p>通过网关 http 到 dubbo 协议转换，实现前端流量接入后端 dubbo 服务。&lt;/p>
 &lt;/div>
@@ -115,7 +187,67 @@
 &lt;div class="h-100 card shadow">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;p>Spring Cloud 体系互通（文档建设中）&lt;/p>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/rate-limit/'>全链路追踪 Tracing&lt;/a>
+&lt;/h4>
+&lt;p>&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="h-100 card shadow">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/rate-limit/'>异步消息&lt;/a>
+&lt;/h4>
+&lt;p>&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="h-100 card shadow">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/rate-limit/'>控制台 Admin&lt;/a>
+&lt;/h4>
+&lt;p>&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="h-100 card shadow">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/rate-limit/'>服务发现&lt;/a>
+&lt;/h4>
+&lt;p>&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="h-100 card shadow">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/rate-limit/'>配置中心&lt;/a>
+&lt;/h4>
+&lt;p>&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="h-100 card shadow">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/rate-limit/'>元数据中心&lt;/a>
+&lt;/h4>
+&lt;p>&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="h-100 card shadow">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/ecosystem/rate-limit/'>Spring Cloud 体系互通&lt;/a>
 &lt;/h4>
 &lt;p>演示如何通过 Dubbo3 应用级服务发现机制，实现和 Spring Cloud 的 rest 协议互通。&lt;/p>
 &lt;/div>
@@ -124,7 +256,7 @@
 &lt;/div>
 &lt;hr>
 &lt;/div>
-&lt;/section></description></item><item><title>Overview: 通信协议</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/triple/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/triple/</guid><description>
+&lt;/section></description></item><item><title>Overview: 通信协议</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/protocols/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/protocols/</guid><description>
 &lt;section id="section-0" style="">
 &lt;div class="td-content list-page">
 &lt;div class="lead">&lt;/div>&lt;header class="article-meta">
@@ -133,7 +265,7 @@
 &lt;div class="h-100 card shadow" href="#">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/triple/idl/'>使用 IDL 定义服务&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/protocols/triple/'>基于 HTTP/2 的 Dubbo3 通信协议&lt;/a>
 &lt;/h4>
 &lt;p>使用 IDL 定义跨语言服务&lt;/p>
 &lt;/div>
@@ -143,7 +275,7 @@
 &lt;div class="h-100 card shadow" href="#">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/triple/wrap/'>Pojo 序列化兼容模式&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/protocols/triple/'>基于 TCP 的 Dubbo2 通信协议&lt;/a>
 &lt;/h4>
 &lt;p>Pojo 序列化兼容模式&lt;/p>
 &lt;/div>
@@ -153,7 +285,17 @@
 &lt;div class="h-100 card shadow" href="#">
 &lt;div class="card-body">
 &lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/triple/streaming/'>Streaming 通信&lt;/a>
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/protocols/triple/'>HTTP 通信协议&lt;/a>
+&lt;/h4>
+&lt;p>Stream 通信模式&lt;/p>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
+&lt;div class="h-100 card shadow" href="#">
+&lt;div class="card-body">
+&lt;h4 class="card-title">
+&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/protocols/triple/'>gRPC 通信协议&lt;/a>
 &lt;/h4>
 &lt;p>Stream 通信模式&lt;/p>
 &lt;/div>
@@ -234,44 +376,6 @@
 &lt;p>Dubbo Control Plane + Proxyless (文档建设中)&lt;/p>
 &lt;/h4>
 &lt;p>&lt;/p>
-&lt;/div>
-&lt;/div>
-&lt;/div>
-&lt;/div>
-&lt;hr>
-&lt;/div>
-&lt;/section></description></item><item><title>Overview: 版本迁移</title><link>http://static.dubbo.apache.org:8080/zh/overview/tasks/migration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/tasks/migration/</guid><description>
-&lt;section id="section-0" style="">
-&lt;div class="td-content list-page">
-&lt;div class="lead">&lt;/div>&lt;header class="article-meta">
-&lt;/header>&lt;div class="row">
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
-&lt;div class="h-100 card shadow" href="#">
-&lt;div class="card-body">
-&lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/migration/2to3/'>平滑升级到 Dubbo3 &lt;/a>
-&lt;/h4>
-&lt;p>平滑升级到 Dubbo3 版本。&lt;/p>
-&lt;/div>
-&lt;/div>
-&lt;/div>
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
-&lt;div class="h-100 card shadow">
-&lt;div class="card-body">
-&lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/migration/service-discovery-samples/'>迁移到 Dubbo3 应用级服务发现&lt;/a>
-&lt;/h4>
-&lt;p>迁移到 Dubbo3 应用级服务发现。&lt;/p>
-&lt;/div>
-&lt;/div>
-&lt;/div>
-&lt;div class="col-sm col-md-6 mb-4 mb-md-0">
-&lt;div class="h-100 card shadow">
-&lt;div class="card-body">
-&lt;h4 class="card-title">
-&lt;a href='http://static.dubbo.apache.org:8080/zh/overview/tasks/migration/migration-triple/'>迁移到 Triple 协议&lt;/a>
-&lt;/h4>
-&lt;p>迁移到 Dubbo3 Triple 协议&lt;/p>
 &lt;/div>
 &lt;/div>
 &lt;/div>

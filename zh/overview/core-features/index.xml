@@ -1,4 +1,629 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Apache Dubbo – 核心特性</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/</link><description>Recent content in 核心特性 on Apache Dubbo</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="http://static.dubbo.apache.org:8080/zh/overview/core-features/index.xml" rel="self" type="application/rss+xml"/><item><title>Overview: 定义服务</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/service-definition/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/service-definition/</guid><description/></item><item><title>Overview: 服务发现</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/service-discovery/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/service-discovery/</guid><description/></item><item><title>Overview: 负载均衡</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/load-balance/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/load-balance/</guid><description/></item><item><title>Overview: 流量管控</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/traffic-management/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/traffic-management/</guid><description/></item><item><title>Overview: 配置管理</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/configuration/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Apache Dubbo – 核心特性</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/</link><description>Recent content in 核心特性 on Apache Dubbo</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="http://static.dubbo.apache.org:8080/zh/overview/core-features/index.xml" rel="self" type="application/rss+xml"/><item><title>Overview: 定义服务</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/service-definition/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/service-definition/</guid><description>
+&lt;p>本文可帮助开发者了解 Dubbo 微服务项目构建、开发、部署、观测、治理的全生命周期基本流程，这篇文档更多的是展示 Dubbo 的开发流程与开发模式。&lt;/p>
+&lt;p>如果您需要可实际动手实践的示例，期望能跟随示例讲解一步步的完成开发，请参考以下每个语言的快速开始：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="">Java 快速开始&lt;/a>&lt;/li>
+&lt;li>&lt;a href="">Go 快速开始&lt;/a>&lt;/li>
+&lt;li>&lt;a href="">Rust 快速开始&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h2 id="第一步准备微服务环境">第一步，准备微服务环境&lt;/h2>
+&lt;p>在开发微服务之前，您需要安装相关的微服务基础设施如注册中心、服务治理控制台等。&lt;/p>
+&lt;p>以下文档可以引导您快速的安装 Nacos、Zookeeper、Dubbo Admin 等注册中心与控制台组件。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="">Kubernetes 环境安装&lt;/a>&lt;/li>
+&lt;li>&lt;a href="">传统虚拟机环境安装&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>安装注册中心、服务治理中心等组件&lt;/p>
+&lt;h2 id="第一步初始化项目">第一步，初始化项目&lt;/h2>
+&lt;p>如果您正在使用 Java 或 Go 开发微服务，则可以使用 Dubbo 提供的脚手架快速创建项目骨架，骨架项目包含开发 Dubbo 必须的依赖和配置，同时还包含一些对应的微服务开发的常用模式：&lt;/p>
+&lt;ul>
+&lt;li>Java 项目脚手架&lt;/li>
+&lt;li>Go 项目脚手架&lt;/li>
+&lt;/ul>
+&lt;p>以下是一个脚手架示例项目结构：&lt;/p>
+&lt;p>&lt;img src="" alt="骨架项目截图">&lt;/p>
+&lt;p>可以直接导入 IDE 开始微服务业务开发。对于除 Java 和 Go 之外的其他语言，您也可以基于 Dubbo 提供的指引快速的创建项目。&lt;/p>
+&lt;h2 id="第二步定义服务">第二步，定义服务&lt;/h2>
+&lt;p>服务是 Dubbo 开发、通信和治理的基本单位，通常我们讲的 Dubbo 服务是一个类似编程语言接口的概念，它是一系列可以被调用的方法的集合。通常来说，服务提供者 (Server) 负责提供服务定义的实现，而服务消费者 (Client) 基于服务定义对服务提供者发起 RPC 调用。&lt;/p>
+&lt;p>Dubbo 提供多种语言实现，开发者既可以选择以语言特有的方式定义服务，也可以选择使用语言中立的 IDL (Proto Buffers) 定义服务。&lt;/p>
+&lt;ul class="nav nav-tabs" id="tabs-0" role="tablist">&lt;li class="nav-item">
+&lt;a class="nav-link active tab-Java"
+id="tabs-0-0-tab" data-toggle="tab" href="#tabs-0-0" role="tab" onclick="handleClick(&amp;#34;Java&amp;#34;);"
+aria-controls="tabs-0-0" aria-selected="true">
+Java
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Go"
+id="tabs-0-1-tab" data-toggle="tab" href="#tabs-0-1" role="tab" onclick="handleClick(&amp;#34;Go&amp;#34;);"
+aria-controls="tabs-0-1" aria-selected="false">
+Go
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-IDL"
+id="tabs-0-2-tab" data-toggle="tab" href="#tabs-0-2" role="tab" onclick="handleClick(&amp;#34;IDL&amp;#34;);"
+aria-controls="tabs-0-2" aria-selected="false">
+IDL
+&lt;/a>
+&lt;/li>&lt;/ul>
+&lt;div class="tab-content" id="tabs-0-content">
+&lt;div class="tab-pane fade show active"
+id="tabs-0-0" role="tabpanel" aria-labelled-by="tabs-0-0-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Java" data-lang="Java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">interface&lt;/span> &lt;span style="color:#268bd2">DemoService&lt;/span> &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> String &lt;span style="color:#268bd2">sayHello&lt;/span>&lt;span style="color:#719e07">(&lt;/span>String name&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-0-1" role="tabpanel" aria-labelled-by="tabs-0-1-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Go" data-lang="Go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">type&lt;/span> DemoService &lt;span style="color:#268bd2">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> SayHello &lt;span style="color:#268bd2">func&lt;/span>(req []&lt;span style="color:#dc322f">string&lt;/span>) (&lt;span style="color:#dc322f">string&lt;/span>, &lt;span style="color:#dc322f">error&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-0-2" role="tabpanel" aria-labelled-by="tabs-0-2-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>syntax = &lt;span style="color:#2aa198">&amp;#34;proto3&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>option java_multiple_files = &lt;span style="color:#cb4b16">true&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>option java_package = &lt;span style="color:#2aa198">&amp;#34;org.apache.dubbo.demo.hello&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>option java_outer_classname = &lt;span style="color:#2aa198">&amp;#34;HelloWorldProto&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>option objc_class_prefix = &lt;span style="color:#2aa198">&amp;#34;HLW&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">package&lt;/span> helloworld;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>service Greeter{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#586e75">// unary
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span> rpc &lt;span style="color:#268bd2">greet&lt;/span>(HelloRequest) &lt;span style="color:#268bd2">returns&lt;/span> (HelloReply);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// The request message containing the user&amp;#39;s name.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>message HelloRequest {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#dc322f">string&lt;/span> name = &lt;span style="color:#2aa198">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// The response message containing the greetings
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>message HelloReply {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#dc322f">string&lt;/span> message = &lt;span style="color:#2aa198">1&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;/div>
+&lt;h2 id="第三步开发服务提供者">第三步，开发服务提供者&lt;/h2>
+&lt;p>服务提供者（Server）需要完成两件事情：&lt;/p>
+&lt;ol>
+&lt;li>基于上一步的服务定义给出业务逻辑实现&lt;/li>
+&lt;li>启动一个 Dubbo Server 监听来自客户端的请求并返回服务响应
+&lt;br/>&lt;br/>&lt;/li>
+&lt;/ol>
+&lt;p>首先，开发者遵循服务定义规范编写业务逻辑实现，如业务类需要实现特定接口或者抽象某个抽象类等。
+&lt;br/>&lt;br/>&lt;/p>
+&lt;ul class="nav nav-tabs" id="tabs-1" role="tablist">&lt;li class="nav-item">
+&lt;a class="nav-link active tab-Java"
+id="tabs-1-0-tab" data-toggle="tab" href="#tabs-1-0" role="tab" onclick="handleClick(&amp;#34;Java&amp;#34;);"
+aria-controls="tabs-1-0" aria-selected="true">
+Java
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Go"
+id="tabs-1-1-tab" data-toggle="tab" href="#tabs-1-1" role="tab" onclick="handleClick(&amp;#34;Go&amp;#34;);"
+aria-controls="tabs-1-1" aria-selected="false">
+Go
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-IDL-Java"
+id="tabs-1-2-tab" data-toggle="tab" href="#tabs-1-2" role="tab" onclick="handleClick(&amp;#34;IDL-Java&amp;#34;);"
+aria-controls="tabs-1-2" aria-selected="false">
+IDL Java
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-IDL-Go"
+id="tabs-1-3-tab" data-toggle="tab" href="#tabs-1-3" role="tab" onclick="handleClick(&amp;#34;IDL-Go&amp;#34;);"
+aria-controls="tabs-1-3" aria-selected="false">
+IDL Go
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-IDL-Rust"
+id="tabs-1-4-tab" data-toggle="tab" href="#tabs-1-4" role="tab" onclick="handleClick(&amp;#34;IDL-Rust&amp;#34;);"
+aria-controls="tabs-1-4" aria-selected="false">
+IDL Rust
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-IDL-Node.js"
+id="tabs-1-5-tab" data-toggle="tab" href="#tabs-1-5" role="tab" onclick="handleClick(&amp;#34;IDL-Node.js&amp;#34;);"
+aria-controls="tabs-1-5" aria-selected="false">
+IDL Node.js
+&lt;/a>
+&lt;/li>&lt;/ul>
+&lt;div class="tab-content" id="tabs-1-content">
+&lt;div class="tab-pane fade show active"
+id="tabs-1-0" role="tabpanel" aria-labelled-by="tabs-1-0-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Java" data-lang="Java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">class&lt;/span> &lt;span style="color:#268bd2">DemoServiceImpl&lt;/span> &lt;span style="color:#268bd2">implements&lt;/span> DemoService &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">public&lt;/span> String &lt;span style="color:#268bd2">sayHello&lt;/span>&lt;span style="color:#719e07">(&lt;/span>String name&lt;span style="color:#719e07">)&lt;/span> &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">return&lt;/span> &lt;span style="color:#2aa198">&amp;#34;Hello &amp;#34;&lt;/span> &lt;span style="color:#719e07">+&lt;/span> name &lt;span style="color:#719e07">+&lt;/span> &lt;span style="color:#2aa198">&amp;#34;, response from provider: &amp;#34;&lt;/span> &lt;span style="color:#719e07">+&lt;/span> RpcContext&lt;span style="color:#719e07">.&lt;/span>getServiceContext&lt;span style="color:#719e07">().&lt;/span>getLocalAddress&lt;span style="color:#719e07">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-1-1" role="tabpanel" aria-labelled-by="tabs-1-1-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Go" data-lang="Go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">type&lt;/span> DemoServiceImpl &lt;span style="color:#268bd2">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">func&lt;/span> (u &lt;span style="color:#719e07">*&lt;/span>DemoServiceImpl) &lt;span style="color:#268bd2">SayHello&lt;/span>(msg &lt;span style="color:#dc322f">string&lt;/span>) (&lt;span style="color:#dc322f">string&lt;/span>, &lt;span style="color:#dc322f">error&lt;/span>) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">return&lt;/span> &lt;span style="color:#2aa198">&amp;#34;Response message!&amp;#34;&lt;/span>, &lt;span style="color:#cb4b16">nil&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-1-2" role="tabpanel" aria-labelled-by="tabs-1-2-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Java" data-lang="Java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// Code generated by Dubbo plugin of protoc compiler
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// Greeter.java
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">interface&lt;/span> &lt;span style="color:#268bd2">Greeter&lt;/span> &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> String JAVA_SERVICE_NAME &lt;span style="color:#719e07">=&lt;/span> &lt;span style="color:#2aa198">&amp;#34;org.apache.dubbo.demo.hello.Greeter&amp;#34;&lt;/span>&lt;span style="color:#719e07">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> String SERVICE_NAME &lt;span style="color:#719e07">=&lt;/span> &lt;span style="color:#2aa198">&amp;#34;helloworld.Greeter&amp;#34;&lt;/span>&lt;span style="color:#719e07">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> org&lt;span style="color:#719e07">.&lt;/span>apache&lt;span style="color:#719e07">.&lt;/span>dubbo&lt;span style="color:#719e07">.&lt;/span>demo&lt;span style="color:#719e07">.&lt;/span>hello&lt;span style="color:#719e07">.&lt;/span>HelloReply &lt;span style="color:#268bd2">greet&lt;/span>&lt;span style="color:#719e07">(&lt;/span>org&lt;span style="color:#719e07">.&lt;/span>apache&lt;span style="color:#719e07">.&lt;/span>dubbo&lt;span style="color:#719e07">.&lt;/span>demo&lt;span style="color:#719e07">.&lt;/span>hello&lt;span style="color:#719e07">.&lt;/span>HelloRequest request&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">default&lt;/span> CompletableFuture&lt;span style="color:#719e07">&amp;lt;&lt;/span>org&lt;span style="color:#719e07">.&lt;/span>apache&lt;span style="color:#719e07">.&lt;/span>dubbo&lt;span style="color:#719e07">.&lt;/span>demo&lt;span style="color:#719e07">.&lt;/span>hello&lt;span style="color:#719e07">.&lt;/span>HelloReply&lt;span style="color:#719e07">&amp;gt;&lt;/span> &lt;span style="color:#268bd2">greetAsync&lt;/span>&lt;span style="color:#719e07">(&lt;/span>org&lt;span style="color:#719e07">.&lt;/span>apache&lt;span style="color:#719e07">.&lt;/span>dubbo&lt;span style="color:#719e07">.&lt;/span>demo&lt;span style="color:#719e07">.&lt;/span>hello&lt;span style="color:#719e07">.&lt;/span>HelloRequest request&lt;span style="color:#719e07">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">return&lt;/span> CompletableFuture&lt;span style="color:#719e07">.&lt;/span>completedFuture&lt;span style="color:#719e07">(&lt;/span>greet&lt;span style="color:#719e07">(&lt;/span>request&lt;span style="color:#719e07">));&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#586e75">// ......
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>&lt;span style="color:#719e07">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// Code generated by Dubbo plugin of protoc compiler
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// DubboGreeterTriple.java
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">static&lt;/span> &lt;span style="color:#268bd2">abstract&lt;/span> &lt;span style="color:#268bd2">class&lt;/span> &lt;span style="color:#268bd2">GreeterImplBase&lt;/span> &lt;span style="color:#268bd2">implements&lt;/span> Greeter&lt;span style="color:#719e07">,&lt;/span> ServerService&lt;span style="color:#719e07">&amp;lt;&lt;/span>Greeter&lt;span style="color:#719e07">&amp;gt;&lt;/span> &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">public&lt;/span> org&lt;span style="color:#719e07">.&lt;/span>apache&lt;span style="color:#719e07">.&lt;/span>dubbo&lt;span style="color:#719e07">.&lt;/span>demo&lt;span style="color:#719e07">.&lt;/span>hello&lt;span style="color:#719e07">.&lt;/span>HelloReply &lt;span style="color:#268bd2">greet&lt;/span>&lt;span style="color:#719e07">(&lt;/span>org&lt;span style="color:#719e07">.&lt;/span>apache&lt;span style="color:#719e07">.&lt;/span>dubbo&lt;span style="color:#719e07">.&lt;/span>demo&lt;span style="color:#719e07">.&lt;/span>hello&lt;span style="color:#719e07">.&lt;/span>HelloRequest request&lt;span style="color:#719e07">){&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">throw&lt;/span> unimplementedMethodException&lt;span style="color:#719e07">(&lt;/span>greetMethod&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#586e75">// ......
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>&lt;span style="color:#719e07">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// The actual business logic that is written and provided by Dubbo user
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">class&lt;/span> &lt;span style="color:#268bd2">GreeterServiceImpl&lt;/span> &lt;span style="color:#268bd2">extends&lt;/span> DubboGreeterTriple&lt;span style="color:#719e07">.&lt;/span>GreeterImplBase &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">public&lt;/span> HelloReply &lt;span style="color:#268bd2">greet&lt;/span>&lt;span style="color:#719e07">(&lt;/span>HelloRequest request&lt;span style="color:#719e07">)&lt;/span> &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">return&lt;/span> HelloReply&lt;span style="color:#719e07">.&lt;/span>newBuilder&lt;span style="color:#719e07">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>setMessage&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;Hello &amp;#34;&lt;/span> &lt;span style="color:#719e07">+&lt;/span> request&lt;span style="color:#719e07">.&lt;/span>getName&lt;span style="color:#719e07">())&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>build&lt;span style="color:#719e07">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-1-3" role="tabpanel" aria-labelled-by="tabs-1-3-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Go" data-lang="Go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// Paste the protoc generated and user provided code snippet here.
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-1-4" role="tabpanel" aria-labelled-by="tabs-1-4-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Rust" data-lang="Rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">use&lt;/span> &lt;span style="color:#719e07">..&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">#[allow(dead_code)]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">#[derive(Default, Clone)]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">struct&lt;/span> &lt;span style="color:#268bd2">GreeterServerImpl&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name: &lt;span style="color:#b58900">String&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// #[async_trait]
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>&lt;span style="color:#719e07">#[async_trait]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">impl&lt;/span> Greeter &lt;span style="color:#719e07">for&lt;/span> GreeterServerImpl {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">async&lt;/span> &lt;span style="color:#719e07">fn&lt;/span> &lt;span style="color:#268bd2">greet&lt;/span>(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">&amp;amp;&lt;/span>&lt;span style="color:#268bd2">self&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> request: &lt;span style="color:#268bd2">Request&lt;/span>&lt;span style="color:#719e07">&amp;lt;&lt;/span>GreeterRequest&lt;span style="color:#719e07">&amp;gt;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ) -&amp;gt; &lt;span style="color:#b58900">Result&lt;/span>&lt;span style="color:#719e07">&amp;lt;&lt;/span>Response&lt;span style="color:#719e07">&amp;lt;&lt;/span>GreeterReply&lt;span style="color:#719e07">&amp;gt;&lt;/span>, dubbo::status::Status&lt;span style="color:#719e07">&amp;gt;&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> println!(&lt;span style="color:#2aa198">&amp;#34;GreeterServer::greet {:?}&amp;#34;&lt;/span>, request.metadata);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#b58900">Ok&lt;/span>(Response::new(GreeterReply {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> message: &lt;span style="color:#2aa198">&amp;#34;hello, dubbo-rust&amp;#34;&lt;/span>.to_string(),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-1-5" role="tabpanel" aria-labelled-by="tabs-1-5-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-IDL Node.js" data-lang="IDL Node.js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// Paste the protoc generated and user provided code snippet here.
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;/div>
+&lt;br/>
+配置并注册以上服务实现类，同时，还可以指定服务参数、注册中心地址、协议与端口等配置，以下是支持几种配置格式示例：
+&lt;br/>&lt;br/>
+&lt;ul class="nav nav-tabs" id="tabs-2" role="tablist">&lt;li class="nav-item">
+&lt;a class="nav-link active tab-YAML"
+id="tabs-2-0-tab" data-toggle="tab" href="#tabs-2-0" role="tab" onclick="handleClick(&amp;#34;YAML&amp;#34;);"
+aria-controls="tabs-2-0" aria-selected="true">
+YAML
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-API"
+id="tabs-2-1-tab" data-toggle="tab" href="#tabs-2-1" role="tab" onclick="handleClick(&amp;#34;API&amp;#34;);"
+aria-controls="tabs-2-1" aria-selected="false">
+API
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Spring-XML"
+id="tabs-2-2-tab" data-toggle="tab" href="#tabs-2-2" role="tab" onclick="handleClick(&amp;#34;Spring-XML&amp;#34;);"
+aria-controls="tabs-2-2" aria-selected="false">
+Spring XML
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Java-Annotation"
+id="tabs-2-3-tab" data-toggle="tab" href="#tabs-2-3" role="tab" onclick="handleClick(&amp;#34;Java-Annotation&amp;#34;);"
+aria-controls="tabs-2-3" aria-selected="false">
+Java Annotation
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-dubbo.properties"
+id="tabs-2-4-tab" data-toggle="tab" href="#tabs-2-4" role="tab" onclick="handleClick(&amp;#34;dubbo.properties&amp;#34;);"
+aria-controls="tabs-2-4" aria-selected="false">
+dubbo.properties
+&lt;/a>
+&lt;/li>&lt;/ul>
+&lt;div class="tab-content" id="tabs-2-content">
+&lt;div class="tab-pane fade show active"
+id="tabs-2-0" role="tabpanel" aria-labelled-by="tabs-2-0-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">dubbo&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">application&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">name&lt;/span>: demo-provider
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">protocol&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">name&lt;/span>: dubbo
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">port&lt;/span>: -&lt;span style="color:#2aa198">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">registry&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">address&lt;/span>: zookeeper://127.0.0.1:2181&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-2-1" role="tabpanel" aria-labelled-by="tabs-2-1-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">static&lt;/span> &lt;span style="color:#dc322f">void&lt;/span> &lt;span style="color:#268bd2">main&lt;/span>&lt;span style="color:#719e07">(&lt;/span>String&lt;span style="color:#719e07">[]&lt;/span> args&lt;span style="color:#719e07">)&lt;/span> &lt;span style="color:#268bd2">throws&lt;/span> Exception &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ServiceConfig&lt;span style="color:#719e07">&amp;lt;&lt;/span>DemoServiceImpl&lt;span style="color:#719e07">&amp;gt;&lt;/span> service &lt;span style="color:#719e07">=&lt;/span> &lt;span style="color:#719e07">new&lt;/span> ServiceConfig&lt;span style="color:#719e07">&amp;lt;&amp;gt;();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> service&lt;span style="color:#719e07">.&lt;/span>setInterface&lt;span style="color:#719e07">(&lt;/span>DemoService&lt;span style="color:#719e07">.&lt;/span>class&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> service&lt;span style="color:#719e07">.&lt;/span>setRef&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> DemoServiceImpl&lt;span style="color:#719e07">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DubboBootstrap bootstrap &lt;span style="color:#719e07">=&lt;/span> DubboBootstrap&lt;span style="color:#719e07">.&lt;/span>getInstance&lt;span style="color:#719e07">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bootstrap&lt;span style="color:#719e07">.&lt;/span>application&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> ApplicationConfig&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;dubbo-demo-api-provider&amp;#34;&lt;/span>&lt;span style="color:#719e07">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>registry&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> RegistryConfig&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;zookeeper://127.0.0.1:2181&amp;#34;&lt;/span>&lt;span style="color:#719e07">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>protocol&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> ProtocolConfig&lt;span style="color:#719e07">(&lt;/span>CommonConstants&lt;span style="color:#719e07">.&lt;/span>DUBBO&lt;span style="color:#719e07">,&lt;/span> &lt;span style="color:#719e07">-&lt;/span>&lt;span style="color:#2aa198">1&lt;/span>&lt;span style="color:#719e07">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>service&lt;span style="color:#719e07">(&lt;/span>service&lt;span style="color:#719e07">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>start&lt;span style="color:#719e07">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>await&lt;span style="color:#719e07">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-2-2" role="tabpanel" aria-labelled-by="tabs-2-2-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-fallback" data-lang="fallback">&lt;span style="display:flex;">&lt;span>&amp;lt;beans xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> xmlns:dubbo=&amp;#34;http://dubbo.apache.org/schema/dubbo&amp;#34;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> xmlns=&amp;#34;http://www.springframework.org/schema/beans&amp;#34;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> xsi:schemaLocation=&amp;#34;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;!-- Process related configurations --&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;dubbo:application name=&amp;#34;demo-provider&amp;#34;/&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;!-- Registry address for service discovery--&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;dubbo:registry address=&amp;#34;zookeeper://127.0.0.1:2181&amp;#34;/&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;!-- Specifies the RPC protocol to use and the TCP port to listen on --&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;dubbo:protocol name=&amp;#34;dubbo&amp;#34; port=&amp;#34;-1&amp;#34;/&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;!-- Put all services need to be exported here --&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;dubbo:service interface=&amp;#34;org.apache.dubbo.demo.DemoService&amp;#34; timeout=&amp;#34;3000&amp;#34; ref=&amp;#34;demoService&amp;#34;/&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;bean id=&amp;#34;demoService&amp;#34; class=&amp;#34;org.apache.dubbo.demo.provider.DemoServiceImpl&amp;#34;/&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&amp;lt;/beans&amp;gt;&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-2-3" role="tabpanel" aria-labelled-by="tabs-2-3-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Java" data-lang="Java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">@DubboService&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">class&lt;/span> &lt;span style="color:#268bd2">DemoServiceImpl&lt;/span> &lt;span style="color:#268bd2">implements&lt;/span> DemoService &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#586e75">// business implementation
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span>&lt;span style="color:#719e07">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">class&lt;/span> &lt;span style="color:#268bd2">DemoServiceComponent&lt;/span> &lt;span style="color:#268bd2">implements&lt;/span> DemoService &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">@DubboReference&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">private&lt;/span> DemoService demoService&lt;span style="color:#719e07">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-2-4" role="tabpanel" aria-labelled-by="tabs-2-4-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-properties" data-lang="properties">&lt;span style="display:flex;">&lt;span>dubbo.application.name&lt;span style="color:#719e07">=&lt;/span>&lt;span style="color:#2aa198">dubbo-demo-annotation-provider&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>dubbo.protocol.name&lt;span style="color:#719e07">=&lt;/span>&lt;span style="color:#2aa198">dubbo&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>dubbo.protocol.port&lt;span style="color:#719e07">=&lt;/span>&lt;span style="color:#2aa198">-1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>dubbo.registry.address&lt;span style="color:#719e07">=&lt;/span>&lt;span style="color:#2aa198">zookeeper://127.0.0.1:2181&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;/div>
+&lt;br/>
+启动 Server 监听服务
+&lt;br/>&lt;br/>
+&lt;ul class="nav nav-tabs" id="tabs-3" role="tablist">&lt;li class="nav-item">
+&lt;a class="nav-link active tab-Java"
+id="tabs-3-0-tab" data-toggle="tab" href="#tabs-3-0" role="tab" onclick="handleClick(&amp;#34;Java&amp;#34;);"
+aria-controls="tabs-3-0" aria-selected="true">
+Java
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Go"
+id="tabs-3-1-tab" data-toggle="tab" href="#tabs-3-1" role="tab" onclick="handleClick(&amp;#34;Go&amp;#34;);"
+aria-controls="tabs-3-1" aria-selected="false">
+Go
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Rust"
+id="tabs-3-2-tab" data-toggle="tab" href="#tabs-3-2" role="tab" onclick="handleClick(&amp;#34;Rust&amp;#34;);"
+aria-controls="tabs-3-2" aria-selected="false">
+Rust
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Node.js"
+id="tabs-3-3-tab" data-toggle="tab" href="#tabs-3-3" role="tab" onclick="handleClick(&amp;#34;Node.js&amp;#34;);"
+aria-controls="tabs-3-3" aria-selected="false">
+Node.js
+&lt;/a>
+&lt;/li>&lt;/ul>
+&lt;div class="tab-content" id="tabs-3-content">
+&lt;div class="tab-pane fade show active"
+id="tabs-3-0" role="tabpanel" aria-labelled-by="tabs-3-0-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Java" data-lang="Java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">static&lt;/span> &lt;span style="color:#dc322f">void&lt;/span> &lt;span style="color:#268bd2">main&lt;/span>&lt;span style="color:#719e07">(&lt;/span>String&lt;span style="color:#719e07">[]&lt;/span> args&lt;span style="color:#719e07">)&lt;/span> &lt;span style="color:#268bd2">throws&lt;/span> Exception &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ServiceConfig&lt;span style="color:#719e07">&amp;lt;&lt;/span>DemoServiceImpl&lt;span style="color:#719e07">&amp;gt;&lt;/span> service &lt;span style="color:#719e07">=&lt;/span> &lt;span style="color:#719e07">new&lt;/span> ServiceConfig&lt;span style="color:#719e07">&amp;lt;&amp;gt;();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> service&lt;span style="color:#719e07">.&lt;/span>setInterface&lt;span style="color:#719e07">(&lt;/span>DemoService&lt;span style="color:#719e07">.&lt;/span>class&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> service&lt;span style="color:#719e07">.&lt;/span>setRef&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> DemoServiceImpl&lt;span style="color:#719e07">());&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DubboBootstrap bootstrap &lt;span style="color:#719e07">=&lt;/span> DubboBootstrap&lt;span style="color:#719e07">.&lt;/span>getInstance&lt;span style="color:#719e07">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bootstrap&lt;span style="color:#719e07">.&lt;/span>application&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> ApplicationConfig&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;dubbo-demo-api-provider&amp;#34;&lt;/span>&lt;span style="color:#719e07">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>registry&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> RegistryConfig&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;zookeeper://127.0.0.1:2181&amp;#34;&lt;/span>&lt;span style="color:#719e07">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>protocol&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> ProtocolConfig&lt;span style="color:#719e07">(&lt;/span>CommonConstants&lt;span style="color:#719e07">.&lt;/span>DUBBO&lt;span style="color:#719e07">,&lt;/span> &lt;span style="color:#719e07">-&lt;/span>&lt;span style="color:#2aa198">1&lt;/span>&lt;span style="color:#719e07">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>service&lt;span style="color:#719e07">(&lt;/span>service&lt;span style="color:#719e07">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>start&lt;span style="color:#719e07">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>await&lt;span style="color:#719e07">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-3-1" role="tabpanel" aria-labelled-by="tabs-3-1-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Go" data-lang="Go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">func&lt;/span> &lt;span style="color:#268bd2">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> config.&lt;span style="color:#268bd2">SetProviderService&lt;/span>(&lt;span style="color:#719e07">&amp;amp;&lt;/span>DemoServiceImpl{})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">if&lt;/span> err &lt;span style="color:#719e07">:=&lt;/span> config.&lt;span style="color:#268bd2">Load&lt;/span>(); err &lt;span style="color:#719e07">!=&lt;/span> &lt;span style="color:#cb4b16">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#b58900">panic&lt;/span>(err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">select&lt;/span> {}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-3-2" role="tabpanel" aria-labelled-by="tabs-3-2-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Rust" data-lang="Rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">#[tokio::main]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">async&lt;/span> &lt;span style="color:#719e07">fn&lt;/span> &lt;span style="color:#268bd2">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> register_server(GreeterServerImpl {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name: &lt;span style="color:#2aa198">&amp;#34;greeter&amp;#34;&lt;/span>.to_string(),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> });
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#586e75">// Dubbo::new().start().await;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span> Dubbo::new()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .with_config({
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">let&lt;/span> r &lt;span style="color:#719e07">=&lt;/span> RootConfig::new();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">match&lt;/span> r.load() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#b58900">Ok&lt;/span>(config) &lt;span style="color:#719e07">=&amp;gt;&lt;/span> config,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#b58900">Err&lt;/span>(_err) &lt;span style="color:#719e07">=&amp;gt;&lt;/span> panic!(&lt;span style="color:#2aa198">&amp;#34;err: {:?}&amp;#34;&lt;/span>, _err), &lt;span style="color:#586e75">// response was droped
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> })
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .start()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .&lt;span style="color:#719e07">await&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-3-3" role="tabpanel" aria-labelled-by="tabs-3-3-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Node.js" data-lang="Node.js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// Put node.js server bootstrapping snippet here
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;/div>
+&lt;br/>
+至此，能监听请求并提供特定服务的 Dubbo Server 就开发和启动完成了。
+&lt;h2 id="第四步开发服务消费者">第四步，开发服务消费者&lt;/h2>
+&lt;p>接下来就是开发一个调用服务的 Client 了&lt;/p>
+&lt;blockquote>
+&lt;p>在 Client 调用服务的前提是需要有服务定义的依赖，这可以通过语言特定的依赖分发系统或 IDL 管理系统实现。&lt;/p>
+&lt;/blockquote>
+&lt;p>通过配置/API声明服务调用，告诉 Dubbo 要生成 Proxy 的服务，同时可以指定服务发现的注册中心等配置：&lt;/p>
+&lt;ul class="nav nav-tabs" id="tabs-4" role="tablist">&lt;li class="nav-item">
+&lt;a class="nav-link active tab-YAML"
+id="tabs-4-0-tab" data-toggle="tab" href="#tabs-4-0" role="tab" onclick="handleClick(&amp;#34;YAML&amp;#34;);"
+aria-controls="tabs-4-0" aria-selected="true">
+YAML
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-API"
+id="tabs-4-1-tab" data-toggle="tab" href="#tabs-4-1" role="tab" onclick="handleClick(&amp;#34;API&amp;#34;);"
+aria-controls="tabs-4-1" aria-selected="false">
+API
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Spring-XML"
+id="tabs-4-2-tab" data-toggle="tab" href="#tabs-4-2" role="tab" onclick="handleClick(&amp;#34;Spring-XML&amp;#34;);"
+aria-controls="tabs-4-2" aria-selected="false">
+Spring XML
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Java-Annotation"
+id="tabs-4-3-tab" data-toggle="tab" href="#tabs-4-3" role="tab" onclick="handleClick(&amp;#34;Java-Annotation&amp;#34;);"
+aria-controls="tabs-4-3" aria-selected="false">
+Java Annotation
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-dubbo.properties"
+id="tabs-4-4-tab" data-toggle="tab" href="#tabs-4-4" role="tab" onclick="handleClick(&amp;#34;dubbo.properties&amp;#34;);"
+aria-controls="tabs-4-4" aria-selected="false">
+dubbo.properties
+&lt;/a>
+&lt;/li>&lt;/ul>
+&lt;div class="tab-content" id="tabs-4-content">
+&lt;div class="tab-pane fade show active"
+id="tabs-4-0" role="tabpanel" aria-labelled-by="tabs-4-0-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-yaml" data-lang="yaml">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">dubbo&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">application&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">name&lt;/span>: demo-consumer
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">registry&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">address&lt;/span>: zookeeper://127.0.0.1:2181&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-4-1" role="tabpanel" aria-labelled-by="tabs-4-1-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">private&lt;/span> &lt;span style="color:#268bd2">static&lt;/span> &lt;span style="color:#dc322f">void&lt;/span> &lt;span style="color:#268bd2">main&lt;/span>&lt;span style="color:#719e07">(&lt;/span>String&lt;span style="color:#719e07">[]&lt;/span> args&lt;span style="color:#719e07">)&lt;/span> &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ReferenceConfig&lt;span style="color:#719e07">&amp;lt;&lt;/span>DemoService&lt;span style="color:#719e07">&amp;gt;&lt;/span> reference &lt;span style="color:#719e07">=&lt;/span> &lt;span style="color:#719e07">new&lt;/span> ReferenceConfig&lt;span style="color:#719e07">&amp;lt;&amp;gt;();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reference&lt;span style="color:#719e07">.&lt;/span>setInterface&lt;span style="color:#719e07">(&lt;/span>DemoService&lt;span style="color:#719e07">.&lt;/span>class&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reference&lt;span style="color:#719e07">.&lt;/span>setGeneric&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;true&amp;#34;&lt;/span>&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> DubboBootstrap bootstrap &lt;span style="color:#719e07">=&lt;/span> DubboBootstrap&lt;span style="color:#719e07">.&lt;/span>getInstance&lt;span style="color:#719e07">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> bootstrap&lt;span style="color:#719e07">.&lt;/span>application&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> ApplicationConfig&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;demo-consumer&amp;#34;&lt;/span>&lt;span style="color:#719e07">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>registry&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#719e07">new&lt;/span> RegistryConfig&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;zookeeper://127.0.0.1:2181&amp;#34;&lt;/span>&lt;span style="color:#719e07">))&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>reference&lt;span style="color:#719e07">(&lt;/span>reference&lt;span style="color:#719e07">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">.&lt;/span>start&lt;span style="color:#719e07">();&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-4-2" role="tabpanel" aria-labelled-by="tabs-4-2-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-fallback" data-lang="fallback">&lt;span style="display:flex;">&lt;span>&amp;lt;beans xmlns:xsi=&amp;#34;http://www.w3.org/2001/XMLSchema-instance&amp;#34;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> xmlns:dubbo=&amp;#34;http://dubbo.apache.org/schema/dubbo&amp;#34;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> xmlns=&amp;#34;http://www.springframework.org/schema/beans&amp;#34;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> xsi:schemaLocation=&amp;#34;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd&amp;#34;&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;dubbo:application name=&amp;#34;demo-consumer&amp;#34;/&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;dubbo:registry id=&amp;#34;demo1&amp;#34; address=&amp;#34;zookeeper://127.0.0.1:2181&amp;#34;/&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &amp;lt;dubbo:reference id=&amp;#34;demoService&amp;#34; check=&amp;#34;false&amp;#34; interface=&amp;#34;org.apache.dubbo.demo.DemoService&amp;#34;/&amp;gt;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&amp;lt;/beans&amp;gt;&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-4-3" role="tabpanel" aria-labelled-by="tabs-4-3-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Java" data-lang="Java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">class&lt;/span> &lt;span style="color:#268bd2">SpringApplication&lt;/span> &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">@DubboReference&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">private&lt;/span> DemoService demoService&lt;span style="color:#719e07">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-4-4" role="tabpanel" aria-labelled-by="tabs-4-4-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-properties" data-lang="properties">&lt;span style="display:flex;">&lt;span>dubbo.application.name&lt;span style="color:#719e07">=&lt;/span>&lt;span style="color:#2aa198">dubbo-demo-annotation-provider&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>dubbo.registry.address&lt;span style="color:#719e07">=&lt;/span>&lt;span style="color:#2aa198">zookeeper://127.0.0.1:2181&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;/div>
+&lt;br/>
+启动 Client
+&lt;br/>&lt;br/>
+&lt;ul class="nav nav-tabs" id="tabs-5" role="tablist">&lt;li class="nav-item">
+&lt;a class="nav-link active tab-Java"
+id="tabs-5-0-tab" data-toggle="tab" href="#tabs-5-0" role="tab" onclick="handleClick(&amp;#34;Java&amp;#34;);"
+aria-controls="tabs-5-0" aria-selected="true">
+Java
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Go"
+id="tabs-5-1-tab" data-toggle="tab" href="#tabs-5-1" role="tab" onclick="handleClick(&amp;#34;Go&amp;#34;);"
+aria-controls="tabs-5-1" aria-selected="false">
+Go
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Rust"
+id="tabs-5-2-tab" data-toggle="tab" href="#tabs-5-2" role="tab" onclick="handleClick(&amp;#34;Rust&amp;#34;);"
+aria-controls="tabs-5-2" aria-selected="false">
+Rust
+&lt;/a>
+&lt;/li>&lt;li class="nav-item">
+&lt;a class="nav-link tab-Node.js"
+id="tabs-5-3-tab" data-toggle="tab" href="#tabs-5-3" role="tab" onclick="handleClick(&amp;#34;Node.js&amp;#34;);"
+aria-controls="tabs-5-3" aria-selected="false">
+Node.js
+&lt;/a>
+&lt;/li>&lt;/ul>
+&lt;div class="tab-content" id="tabs-5-content">
+&lt;div class="tab-pane fade show active"
+id="tabs-5-0" role="tabpanel" aria-labelled-by="tabs-5-0-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Java" data-lang="Java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">public&lt;/span> &lt;span style="color:#268bd2">static&lt;/span> &lt;span style="color:#dc322f">void&lt;/span> &lt;span style="color:#268bd2">main&lt;/span>&lt;span style="color:#719e07">(&lt;/span>String&lt;span style="color:#719e07">[]&lt;/span> args&lt;span style="color:#719e07">)&lt;/span> &lt;span style="color:#268bd2">throws&lt;/span> Exception &lt;span style="color:#719e07">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#586e75">// ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">&lt;/span> DemoService demoService &lt;span style="color:#719e07">=&lt;/span> bootstrap&lt;span style="color:#719e07">.&lt;/span>getCache&lt;span style="color:#719e07">().&lt;/span>get&lt;span style="color:#719e07">(&lt;/span>reference&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> String message &lt;span style="color:#719e07">=&lt;/span> demoService&lt;span style="color:#719e07">.&lt;/span>sayHello&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;dubbo&amp;#34;&lt;/span>&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> System&lt;span style="color:#719e07">.&lt;/span>out&lt;span style="color:#719e07">.&lt;/span>println&lt;span style="color:#719e07">(&lt;/span>&lt;span style="color:#2aa198">&amp;#34;Result: &amp;#34;&lt;/span> &lt;span style="color:#719e07">+&lt;/span> message&lt;span style="color:#719e07">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">}&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-5-1" role="tabpanel" aria-labelled-by="tabs-5-1-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Go" data-lang="Go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#268bd2">func&lt;/span> &lt;span style="color:#268bd2">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> config.&lt;span style="color:#268bd2">SetProviderService&lt;/span>(&lt;span style="color:#719e07">&amp;amp;&lt;/span>DemoServiceImpl{})
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">if&lt;/span> err &lt;span style="color:#719e07">:=&lt;/span> config.&lt;span style="color:#268bd2">Load&lt;/span>(); err &lt;span style="color:#719e07">!=&lt;/span> &lt;span style="color:#cb4b16">nil&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#b58900">panic&lt;/span>(err)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#719e07">select&lt;/span> {}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-5-2" role="tabpanel" aria-labelled-by="tabs-5-2-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Rust" data-lang="Rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">#[tokio::main]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#719e07">async&lt;/span> &lt;span style="color:#719e07">fn&lt;/span> &lt;span style="color:#268bd2">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">let&lt;/span> &lt;span style="color:#719e07">mut&lt;/span> cli &lt;span style="color:#719e07">=&lt;/span> GreeterClient::new().with_uri(&lt;span style="color:#2aa198">&amp;#34;http://127.0.0.1:8888&amp;#34;&lt;/span>.to_string());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> println!(&lt;span style="color:#2aa198">&amp;#34;# unary call&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">let&lt;/span> resp &lt;span style="color:#719e07">=&lt;/span> cli
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .greet(Request::new(GreeterRequest {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name: &lt;span style="color:#2aa198">&amp;#34;message from client&amp;#34;&lt;/span>.to_string(),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> .&lt;span style="color:#719e07">await&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">let&lt;/span> resp &lt;span style="color:#719e07">=&lt;/span> &lt;span style="color:#719e07">match&lt;/span> resp {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#b58900">Ok&lt;/span>(resp) &lt;span style="color:#719e07">=&amp;gt;&lt;/span> resp,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#b58900">Err&lt;/span>(err) &lt;span style="color:#719e07">=&amp;gt;&lt;/span> &lt;span style="color:#719e07">return&lt;/span> println!(&lt;span style="color:#2aa198">&amp;#34;{:?}&amp;#34;&lt;/span>, err),
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#268bd2">let&lt;/span> (_parts, body) &lt;span style="color:#719e07">=&lt;/span> resp.into_parts();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> println!(&lt;span style="color:#2aa198">&amp;#34;Response: {:?}&amp;#34;&lt;/span>, body);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;div class="tab-pane fade"
+id="tabs-5-3" role="tabpanel" aria-labelled-by="tabs-5-3-tab">&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-Node.js" data-lang="Node.js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#586e75">// Put node.js client snippet here
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>
+&lt;/div>
+&lt;p>服务调用&lt;/p>
+&lt;h2 id="第五步打包部署">第五步，打包部署&lt;/h2>
+&lt;h4 id="语言特定形式分发包">语言特定形式分发包&lt;/h4>
+&lt;p>您可以选择以语言特定方式打包 Dubbo 开发的服务 (如 Java Jar、Go Module 等)，并以语言提供的发机制将二进制包分发出去。一般来讲，要注意一以下几点：&lt;/p>
+&lt;ul>
+&lt;li>服务定义最好作为单独的二进制包由 Server 端定义并打包分发，以便所有 Client 都能依赖并基于服务定义编码；&lt;/li>
+&lt;li>Dubbo Server 和 Dubbo Client 的打包与分发与普通应用完全一样，如 Java 应用就可以用 Maven 或 Gradle 直接打包分发；&lt;/li>
+&lt;li>如果您是以 IDL 方式定义服务，还需要考虑 IDL 的分发与管理方式；&lt;/li>
+&lt;/ul>
+&lt;h4 id="docker-镜像">Docker 镜像&lt;/h4>
+&lt;p>在当今容器时代，打包为 Docker 镜像已变为更通用的分发形式&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#93a1a1;background-color:#002b36;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-sh" data-lang="sh">&lt;span style="display:flex;">&lt;span>docker build -t &lt;span style="color:#2aa198">${&lt;/span>&lt;span style="color:#268bd2">your&lt;/span>-organization&lt;span style="color:#2aa198">}&lt;/span>/&lt;span style="color:#2aa198">${&lt;/span>&lt;span style="color:#268bd2">project&lt;/span>-name&lt;span style="color:#2aa198">}&lt;/span>:&lt;span style="color:#2aa198">${&lt;/span>&lt;span style="color:#268bd2">tag&lt;/span>-or-version&lt;span style="color:#2aa198">}&lt;/span> .
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>通常，在脚手架生成的根目录下 &lt;code>/deploy&lt;/code> 有预先生成的镜像打包 Dockerfile 模版，可以按需修改后直接用来打包。&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="第六步部署">第六步，部署&lt;/h2>
+&lt;p>Dubbo 微服务支持多种部署架构，与云原生基础设施做了很好的适配：&lt;/p>
+&lt;ul>
+&lt;li>传统的自建服务治理体系模式，需自行维护微服务需要的注册中心集群、配置中心集群等&lt;/li>
+&lt;li>基于 Kubernetes Native Service 微服务体系，此时 Kubernetes 集群承担服务抽象、注册中心、配置中心等角色&lt;/li>
+&lt;li>服务网格架构，服务治理角色由控制面承担，Dubbo 作为数据面组件与 Sidecar 部署在一起，或者采用无 Sidecar 的 Proxyless 架构&lt;/li>
+&lt;/ul>
+&lt;h4 id="传统自建注册配置中心模式">传统自建注册、配置中心模式&lt;/h4>
+&lt;p>Dubbo 微服务需要依赖一些中心化集群协调状态，以下是一个抽象的 Dubbo 部署架构图：&lt;/p>
+&lt;p>&lt;img src="" alt="三中心部署架构图">&lt;/p>
+&lt;p>图：部署在虚拟机或 Kubernetes 集群的传统 Dubbo 微服务架构&lt;/p>
+&lt;ul>
+&lt;li>注册中心。协调 Consumer 与 Provider 之间的地址注册与发现&lt;/li>
+&lt;li>配置中心 (可选)
+&lt;ul>
+&lt;li>存储 Dubbo 启动阶段的全局配置，保证配置的跨环境共享与全局一致性&lt;/li>
+&lt;li>负责服务治理规则（路由规则、动态配置等）的存储与推送。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>元数据中心 (可选)
+&lt;ul>
+&lt;li>接收 Provider 上报的服务接口元数据，为 Admin 等控制台提供运维能力（如服务测试、接口文档等）&lt;/li>
+&lt;li>作为服务发现机制的补充，提供额外的接口/方法级别配置信息的同步能力，相当于注册中心的额外扩展&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>以上三个中心集群并不是运行 Dubbo 的必要条件，用户完全可以根据自身业务情况决定只启用其中一个或多个，以达到简化部署的目的。通常情况下，所有用户都会从独立的注册中心开始 Dubbo 服务开发，而配置中心、元数据中心则会在微服务演进的过程中逐步的按需被引入进来。注册中心、配置中心和元数据中心都是逻辑概念，它们完全可以是同一个物理集群，如部署一个 Zookeeper 集群同时作为注册中心、配置中心和元数据中心。&lt;/p>
+&lt;p>如您是在 Kubernetes 搭建 Dubbo 微服务集群，请参考 &lt;a href="">如何在 Kubernetes 集群部署 Dubbo 服务&lt;/a> 了解更多。&lt;/p>
+&lt;h4 id="kubernetes-原生服务">Kubernetes 原生服务&lt;/h4>
+&lt;p>&lt;img src="" alt="参考下 Spring Kubernetes 等的架构图">&lt;/p>
+&lt;p>在这种模式下，Dubbo 服务将与 Kubernetes 原生服务实现概念对齐，同时，开发者也不再需要部署独立的注册、配置中心集群，这部分职责由 Kubernetes 及相应组件如 Service、ConfigMap、Deployment 等承担。具体是原理上，是由 Dubbo 节点直接与 Kubernete api-server 或 DNS 通信实现。&lt;/p>
+&lt;p>请参考 &lt;a href="">Dubbo Kubernetes 原生服务任务&lt;/a> 了解更多&lt;/p>
+&lt;h4 id="服务网格">服务网格&lt;/h4>
+&lt;p>Dubbo 服务可以无缝接入 Istio 体系，并且，Dubbo 支持更灵活的数据面部署形式&lt;/p>
+&lt;ul>
+&lt;li>Sidecar 模式，Dubbo 可以与 Envoy 等代理部署在一起，实现流量拦截和治理&lt;/li>
+&lt;li>Proxyless 模式，Dubbo 通过直接与 Istio 等控制面通信，实现与 Sidecar 模式对等能力的同时，减少了部署成本和性能损耗。&lt;/li>
+&lt;/ul>
+&lt;p>&lt;img src="http://static.dubbo.apache.org:8080/imgs/v3/mesh/thinsdk-envoy.png" alt="服务网格部署架构图">&lt;/p>
+&lt;p>具体可参见 &lt;a href="">Dubbo 服务网格&lt;/a> 部分说明。&lt;/p>
+&lt;h2 id="第七步观测服务状态">第七步，观测服务状态&lt;/h2>
+&lt;p>可以通过 Dubbo 官方提供的 Admin 控制台非常方便的观测服务运行状态。&lt;/p>
+&lt;p>&lt;img src="" alt="Admin 截图">&lt;/p>
+&lt;p>请参考 &lt;a href="">如何部署 Admin&lt;/a> 了解如何将 Admin 部署您的开发或生产环境。&lt;/p>
+&lt;blockquote>
+&lt;p>注意：部署过程中必须要配置 Admin 连接到您正在使用的注册中心或配置中心集群，保证 Admin 和 Dubbo 微服务集群共享相同数据源。&lt;/p>
+&lt;/blockquote>
+&lt;p>如果您将 Dubbo 部署在服务网格架构，则还可以使用对应控制面产品支持的控制台来观测 Dubbo 服务状态，如 Istio、Kiali。更多可观测能力如 Accessing Log、Tracing 等，请参考&lt;a href="">可观测性&lt;/a>文档。&lt;/p>
+&lt;h2 id="第八步服务治理">第八步，服务治理&lt;/h2>
+&lt;p>为了使 Dubbo 服务稳定、可控的运行，我们需要在运行态对 Dubbo 服务进行治理。&lt;/p>
+&lt;p>首先，可以通过 Dubbo Admin 完成绝大多数的治理需求，如查看服务状态、下发流量规则等&lt;/p>
+&lt;p>&lt;img src="" alt="Dubbo Admin 治理效果图">&lt;/p>
+&lt;p>对于更高阶的治理诉求，可通过以下内容了解：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="">网关流量接入&lt;/a>，通过网关实现前端 HTTP 流量接入 Dubbo 服务&lt;/li>
+&lt;li>&lt;a href="">限流降级&lt;/a>，通过 Sentinel 等突发流量，就要用到限流降级能力，&lt;/li>
+&lt;li>&lt;a href="">数据一致性&lt;/a>，了解 Dubbo 服务的分布式事物解决方案&lt;/li>
+&lt;li>&lt;a href="">全链路追踪&lt;/a>，了解 Dubbo 服务如何接入 Zipkin、Skywalking、OpenTracing 等全链路监控组件&lt;/li>
+&lt;li>&lt;a href="">服务发现&lt;/a>，了解 Dubbo 的服务发现机制和扩展实现&lt;/li>
+&lt;li>&lt;a href="">流量管控&lt;/a>，了解 Dubbo 丰富的流量管控规则定义及使用方式&lt;/li>
+&lt;/ul></description></item><item><title>Overview: 服务发现</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/service-discovery/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/service-discovery/</guid><description/></item><item><title>Overview: 负载均衡</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/load-balance/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/load-balance/</guid><description/></item><item><title>Overview: 流量管控</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/traffic-management/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/traffic-management/</guid><description>
+&lt;h2 id="标签路由">标签路由&lt;/h2>
+&lt;h2 id="动态配置">动态配置&lt;/h2>
+&lt;hr>
+&lt;p>configVersion: v3.0
+scope: application/service
+key: app-name/group+service+version
+enabled: true
+configs:&lt;/p>
+&lt;ul>
+&lt;li>match:
+address:
+wildcard: xxx
+service:
+oneof: []
+application:
+oneof: []
+param:
+- key: url-key
+value:
+exact: url-value
+- key: url-key
+value:
+exact: url-value
+side: consumer
+parameters:
+timeout: 1000
+cluster: failfase
+loadbalance: random
+&amp;hellip;&lt;/li>
+&lt;/ul></description></item><item><title>Overview: 配置管理</title><link>http://static.dubbo.apache.org:8080/zh/overview/core-features/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://static.dubbo.apache.org:8080/zh/overview/core-features/configuration/</guid><description>
 &lt;h2 id="rpc-通信">RPC 通信&lt;/h2>
 &lt;p>Dubbo3 的 Triple 协议构建在 HTTP/2 协议之上，因此具有更好的穿透性与通用性，Triple 协议兼容 gRPC，提供 Request Response、Request Streaming、Response Streaming、Bi-directional Streaming 等通信模型；从 Triple 协议开始，Dubbo 还支持基于 IDL 的服务定义。&lt;/p>
 &lt;p>此外，Dubbo 还集成了业界主流的大部分协议，使得用户可以在 Dubbo 框架范围内使用这些通信协议，为用户提供了统一的编程模型与服务治理模型，这些协议包括 rest、hessian2、jsonrpc、thrift 等，注意不同语言 SDK 实现支持的范围会有一些差异。&lt;/p>
