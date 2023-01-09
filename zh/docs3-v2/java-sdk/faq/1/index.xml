@@ -245,19 +245,18 @@
 &lt;li>排查服务端是否已脱机或客户端的网络断开。&lt;/li>
 &lt;li>排查服务端服务是否正常，并可通过网络进行接口请求。&lt;/li>
 &lt;/ol></description></item><item><title>Docs3-V2: 1-32 - xDS Channel 初始化失败</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/32/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/32/</guid><description>
-&lt;h2 id="可能的原因">可能的原因&lt;/h2>
+&lt;h3 id="可能的原因">可能的原因&lt;/h3>
 &lt;ol>
 &lt;li>版本可能不一致或不兼容。&lt;/li>
 &lt;li>读取数据时超时。&lt;/li>
 &lt;li>参数配置有问题。&lt;/li>
 &lt;/ol>
-&lt;h2 id="排查和解决步骤">排查和解决步骤&lt;/h2>
+&lt;h3 id="排查和解决步骤">排查和解决步骤&lt;/h3>
 &lt;ol>
 &lt;li>可根据第三方官网介绍进行适配。&lt;/li>
 &lt;li>确认是否是超时时间设置过短或服务端存在问题。&lt;/li>
 &lt;li>检测端口的映射关系是否正确。&lt;/li>
-&lt;/ol>
-&lt;p style="margin-top: 3rem;"> &lt;/p></description></item><item><title>Docs3-V2: 1-33 - xDS 服务发现初始化失败</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/33/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/33/</guid><description>
+&lt;/ol></description></item><item><title>Docs3-V2: 1-33 - xDS 服务发现初始化失败</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/33/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/33/</guid><description>
 &lt;h3 id="可能的原因">可能的原因&lt;/h3>
 &lt;ol>
 &lt;li>xDS 模式下的注册中心，地址配置错误。&lt;/li>
@@ -273,17 +272,16 @@
 &lt;h2 id="排查和解决步骤">排查和解决步骤&lt;/h2>
 &lt;p>可根据堆栈打印的 Endpoints List 进行原因定位。&lt;/p>
 &lt;p style="margin-top: 3rem;"> &lt;/p></description></item><item><title>Docs3-V2: 1-35 - ZK 异常</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/35/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/35/</guid><description>
-&lt;h2 id="可能的原因">可能的原因&lt;/h2>
+&lt;h3 id="可能的原因">可能的原因&lt;/h3>
 &lt;ol>
 &lt;li>ZK 无法连接里或连接超时。&lt;/li>
 &lt;li>ZNode 在创建时已存在。&lt;/li>
 &lt;/ol>
-&lt;h2 id="排查和解决步骤">排查和解决步骤&lt;/h2>
+&lt;h3 id="排查和解决步骤">排查和解决步骤&lt;/h3>
 &lt;ol>
-&lt;li>检查ZK配置IP 和 端口号是否正确。可使用第三方工具 ZooInspector 进行连接测试&lt;/li>
-&lt;li>根据堆栈提醒ZNode 信息进行判断，是否可清理当前节点。&lt;/li>
-&lt;/ol>
-&lt;p style="margin-top: 3rem;"> &lt;/p></description></item><item><title>Docs3-V2: 1-36 - 未知异常</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/36/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/36/</guid><description>
+&lt;li>检查 ZK 配置 IP 和 端口号是否正确。可使用第三方工具 ZooInspector 进行连接测试。&lt;/li>
+&lt;li>根据堆栈提醒 ZNode 信息进行判断，是否可清理当前节点。&lt;/li>
+&lt;/ol></description></item><item><title>Docs3-V2: 1-36 - 未知异常</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/36/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/36/</guid><description>
 &lt;h2 id="重要提醒">重要提醒&lt;/h2>
 &lt;p>该错误码的意义已经调整。对于 Dubbo 3.1.4、3.2.0-beta.3 及其之前的版本的该错误码的出错，请参考错误码 &lt;a href="https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/99/0/">99-0&lt;/a>。&lt;/p>
 &lt;p>（该错误码目前空缺）&lt;/p>
