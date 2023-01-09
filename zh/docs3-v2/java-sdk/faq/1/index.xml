@@ -217,14 +217,13 @@
 &lt;h2 id="排查和解决步骤">排查和解决步骤&lt;/h2>
 &lt;p>可通过一些第三方的工具或者&lt;code>jstack [PID] &amp;gt; jstack.log&lt;/code> 分析堆栈信息，进行定位。&lt;/p>
 &lt;p style="margin-top: 3rem;"> &lt;/p></description></item><item><title>Docs3-V2: 1-29 - xDS 读取文件失败</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/29/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/29/</guid><description>
-&lt;h2 id="可能的原因">可能的原因&lt;/h2>
+&lt;h3 id="可能的原因">可能的原因&lt;/h3>
 &lt;p>网络断开或目标文件此时已损坏。&lt;/p>
-&lt;h2 id="排查和解决步骤">排查和解决步骤&lt;/h2>
+&lt;h3 id="排查和解决步骤">排查和解决步骤&lt;/h3>
 &lt;ol>
 &lt;li>网络是否正常。&lt;/li>
-&lt;li>可通过一些第三方的工具或者&lt;code>jstack [PID] &amp;gt; jstack.log&lt;/code> 分析堆栈信息，进行定位。&lt;/li>
-&lt;/ol>
-&lt;p style="margin-top: 3rem;"> &lt;/p></description></item><item><title>Docs3-V2: 1-30 - xDS 请求失败</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/30/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/30/</guid><description>
+&lt;li>可通过一些第三方的工具或者 &lt;code>jstack [PID] &amp;gt; jstack.log&lt;/code> 分析堆栈信息，进行定位。&lt;/li>
+&lt;/ol></description></item><item><title>Docs3-V2: 1-30 - xDS 请求失败</title><link>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/30/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://dubbo.apache.org/zh/docs3-v2/java-sdk/faq/1/30/</guid><description>
 &lt;h2 id="可能的原因">可能的原因&lt;/h2>
 &lt;ol>
 &lt;li>版本可能不一致或不兼容。&lt;/li>
